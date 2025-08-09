@@ -24,8 +24,9 @@ client.on('ready', (c) => {
 
 //bat su kien nguoi dung bam nut chao
 client.on("interactionCreate", async interaction => {
-    if (interaction.customId === 'welcome_button') {
-        if (newMembers.has(interaction.user.id)) {
+    if (interaction.customId.substring(0, 8) === 'welcome_') {
+        if (interaction.customId.substring(8) === interaction.user.id) {
+
             await interaction.reply({ content: `${interaction.user.tag} đã gửi lời chào đến mọi người!` });
         } else {
             await interaction.reply({ content: `${interaction.user.tag} đã gửi lời chào đến thành viên mới!` });
@@ -41,16 +42,12 @@ client.on("interactionCreate", async interaction => {
 //bat su kien nguoi dung moi
 client.on("guildMemberAdd", (guildMember) => {
     if (!guildMember.user.bot) {
-        newMembers.add(guildMember.user.id);
-
-        setTimeout(() => {
-            newMembers.delete(guildMember.user.id);
-        }, 5 * 60 * 1000);
+        //
 
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId('welcome_button')
+                    .setCustomId(`welcome_${guildMember.user.id}`)
                     .setLabel('Say hi!')
                     .setStyle(ButtonStyle.Secondary)
             );
